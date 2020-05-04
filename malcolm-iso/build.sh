@@ -2,7 +2,7 @@
 
 IMAGE_NAME=malcolm
 IMAGE_VERSION=1.0.0
-IMAGE_DISTRIBUTION=buster
+IMAGE_DISTRIBUTION=stretch
 
 BUILD_ERROR_CODE=1
 
@@ -74,23 +74,12 @@ if [ -d "$WORKDIR" ]; then
   # make sure we install the newer kernel, firmwares, and kernel headers
   echo "linux-image-$(uname -r)" > ./config/package-lists/kernel.list.chroot
   echo "linux-headers-$(uname -r)" >> ./config/package-lists/kernel.list.chroot
-  echo "linux-compiler-gcc-8-x86=$(dpkg -s linux-compiler-gcc-8-x86 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "linux-compiler-gcc-6-x86=$(dpkg -s linux-compiler-gcc-6-x86 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "linux-kbuild-4.19=$(dpkg -s linux-kbuild-4.19 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-linux=$(dpkg -s firmware-linux | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-linux-nonfree=$(dpkg -s firmware-linux-nonfree | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-misc-nonfree=$(dpkg -s firmware-misc-nonfree | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-amd-graphics=$(dpkg -s firmware-amd-graphics | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-
-  # virtualbox-guest .deb package(s) in its own clean environment (rather than in hooks/)
-  mkdir -p ./config/packages.chroot/
-  bash ./vbox-guest-build/build-docker-image.sh
-  docker run --rm -v "$(pwd)"/vbox-guest-build:/build vboxguest-build:latest -o /build
-  rm -f ./vbox-guest-build/*-source*.deb \
-        ./vbox-guest-build/*-dbgsym*.deb \
-        ./vbox-guest-build/virtualbox_*.deb \
-        ./vbox-guest-build/virtualbox-dkms_*.deb \
-        ./vbox-guest-build/virtualbox-qt_*.deb
-  mv ./vbox-guest-build/*.deb ./config/packages.chroot/
 
   # grab things from the Malcolm parent directory into /etc/skel so the user's got it set up in their home/Malcolm dir
   pushd "$SCRIPT_PATH/.." >/dev/null 2>&1

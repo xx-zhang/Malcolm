@@ -6,8 +6,8 @@ iproute2
 iputils-arping
 iputils-ping
 iputils-tracepath
-libcurl4
-libmmdb2-0
+libcurl3
+libmmdb0
 libpcap0.8
 libssh2-1
 macchanger
