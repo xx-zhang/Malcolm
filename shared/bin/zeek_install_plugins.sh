@@ -69,9 +69,9 @@ function clone_github_repo() {
 SRC_DIR="$(clone_github_repo "https://github.com/zeek/spicy")"
 if [[ -d "$SRC_DIR" ]]; then
   CWD="$(pwd)"
+  # in debian 9 (stretch) this fails even with the right llvm toolchain, because apparently c++17 stuff is experimental there?
   cd "$SRC_DIR" && \
-    ./configure --generator=Ninja --prefix=/opt/spicy --with-zeek=/opt/zeek --enable-ccache && \
-    ninja -C build install
+    ( ./configure --generator=Ninja --prefix=/opt/spicy --with-zeek=/opt/zeek --enable-ccache && ninja -C build install ) || true
   cd "$CWD"
 fi
 
